@@ -26,27 +26,37 @@ const singleProdItem = {
   ],
 };
 
-function ProductsList() {
-  const [mainProductsArr, setMainProductsArr] = useState([]);
-  console.log('mainProductsArr ===', mainProductsArr);
-  console.log(' mainProductsArr[0] ===', JSON.stringify(mainProductsArr[0]));
+// our custom hook
+// yra funnkcija kurioje mes galim naudoti hooks
+// tturi prasideti zodeliu 'use'
+
+function useApiData(url) {
+  const [data, setData] = useState({});
   useEffect(() => {
     axios
-      .get('https://dummyjson.com/products')
+      .get(url)
       .then((resp) => {
         console.log('resp ===', resp);
-        const prodArr = resp.data.products;
-        setMainProductsArr(prodArr);
+        setData(resp.data);
       })
       .catch((error) => {
         console.warn('ivyko klaida:', error);
       });
-  }, []);
+  }, [url]);
+  return[data, setData]
+}
+
+function ProductsList() {
+  const [respObj, setRespObj] = useApiData('https://dummyjson.com/products');
+  const mainProductsArr = respObj.products || []
+  console.log('mainProductsArr ===', mainProductsArr);
+  // console.log(' mainProductsArr[0] ===', JSON.stringify(mainProductsArr[0]));
+  
 
   return (
     <div>
       <ul className='grid grid-cols-3 gap-3 mt-8'>
-        {mainProductsArr.map((pObj) => (
+        { mainProductsArr.map((pObj) => (
           <li className='border' key={pObj.id}>
             <img className='block h-64 w-full object-cover' src={pObj.thumbnail} alt={pObj.title} />
             <div className="info p-4">
