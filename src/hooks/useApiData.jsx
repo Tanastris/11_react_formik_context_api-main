@@ -1,11 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-export default useApiData(url) {
+export default function useApiData(url) {
   const [data, setData] = useState({});
   useEffect(() => {
-    axios
-      .get(url)
+    axios.get(url)
       .then((resp) => {
         console.log('resp ===', resp);
         setData(resp.data);
